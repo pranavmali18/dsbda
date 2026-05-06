@@ -1,0 +1,60 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv('datasets/Iris.csv')
+
+print("Head")
+df.head()
+
+print("Mean")
+df.mean(numeric_only=True)
+
+print("Median")
+df.median(numeric_only=True)
+
+print("Mode")
+df.mode()
+
+print("Standard Deviation")
+df.std(numeric_only=True)
+
+print("Variance")
+df.var(numeric_only=True)
+
+print("Minimum")
+df.min()
+
+print("Maximum")
+df.max()
+
+print("Info")
+df.info()
+
+print("Features and their types:")
+for column in df.columns:
+    if df[column].dtype == 'float64' or df[column].dtype == 'int64':
+        print(f"- {column}: Numeric")
+    else:
+        print(f"- {column}: Nominal")
+
+print("\nCreating histograms for each feature...")
+df.drop('Id', axis=1).hist(figsize=(10, 8), bins=20)
+plt.tight_layout()
+plt.show()
+
+print("\nCreating box plots for each feature...")
+plt.figure(figsize=(10, 8))
+sns.boxplot(data=df.drop(['Id', 'Species'], axis=1))
+plt.tight_layout()
+plt.show()
+
+print("\nIdentifying outliers using box plots for each species...")
+plt.figure(figsize=(12, 10))
+features = ['SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']
+for i, feature in enumerate(features, 1):
+    plt.subplot(2, 2, i)
+    sns.boxplot(x='Species', y=feature, data=df)
+plt.tight_layout()
+plt.show()

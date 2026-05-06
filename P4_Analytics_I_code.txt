@@ -1,0 +1,24 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv('datasets/Iris.csv')
+
+print(df.head())
+print(df.info())
+print(df.describe())
+
+print(df.groupby('Species').mean(numeric_only=True))
+
+sns.scatterplot(x='SepalLengthCm', y='SepalWidthCm', hue='Species', data=df)
+plt.show()
+
+sns.scatterplot(x='PetalLengthCm', y='PetalWidthCm', hue='Species', data=df)
+plt.show()
+
+sns.pairplot(df, hue='Species')
+plt.show()
+
+sns.heatmap(df.corr(numeric_only=True), annot=True)
+plt.show()

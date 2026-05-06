@@ -1,0 +1,76 @@
+import pandas as pd
+import nltk
+import re
+from nltk.tokenize import sent_tokenize
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+text="Tokenization is the first step in text analytics. The process of breaking down a text paragraph into smaller chunks such as words or sentences is called Tokenization."
+print(text)
+
+tokens = word_tokenize(text)
+print("\nTokenization:\n", tokens)
+
+pos_tags = nltk.pos_tag(tokens)
+print("\nPOS Tagging:\n", pos_tags)
+
+stop_words = set(stopwords.words('english'))
+tokens_without_sw = [word for word in tokens if word.lower() not in stop_words]
+print("\nTokens after Stop Words Removal:\n", tokens_without_sw)
+
+stemmer = PorterStemmer()
+stemmed_tokens = [stemmer.stem(word) for word in tokens_without_sw]
+print("\nStemming:\n", stemmed_tokens)
+
+lemmatizer = WordNetLemmatizer()
+lemmatized_tokens = [lemmatizer.lemmatize(word, pos='v') for word in tokens_without_sw]
+print("\nLemmatization:\n", lemmatized_tokens)
+
+documents = [text]  
+
+vectorizer = TfidfVectorizer()
+
+tfidf_matrix = vectorizer.fit_transform(documents)
+
+terms = vectorizer.get_feature_names_out()
+
+tfidf_array = tfidf_matrix.toarray()
+
+print("\nTF-IDF Representation:\n")
+for i in range(len(terms)):
+    print("Term:", terms[i], "TF-IDF:", round(tfidf_array[0][i], 4))
+
+def calculate_tf_idf(documents):
+    tokens = word_tokenize(documents[0])
+    
+    tf = {}
+    for word in tokens:
+        if word in tf:
+            tf[word] += 1
+        else:
+            tf[word] = 1
+    
+    n_documents = len(documents)
+    idf = {}
+    for word in tokens:
+        count = sum(1 for doc in documents if word in doc)
+        idf[word] = n_documents / count
+    
+    tf_idf = {word: tf[word] * idf[word] for word in tf}
+    
+    return tf_idf
+
+documents = [text]
+tf_idf = calculate_tf_idf(documents)
+print("\nCustom TF-IDF Representation:\n")
+for word, score in tf_idf.items():
+    print(f"Term: {word}, TF-IDF: {score:.4f}")
+```[cite: 3]

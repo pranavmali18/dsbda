@@ -1,0 +1,13 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv('datasets/titanic_train.csv')
+
+df.head()
+
+sns.countplot(x='Sex', hue='Survived', data=df)
+plt.title('Survival Counts Based on Gender')
+plt.xlabel('Gender')
+plt.ylabel('Count')

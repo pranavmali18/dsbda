@@ -1,0 +1,43 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv('datasets/weatherAUS.csv')
+print(df.head(5))
+print(df.tail(5))
+print(df.info())
+
+df.describe(include='all')
+
+print(df.isnull().sum())
+print(df.shape)
+print(df.dtypes)
+
+df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
+categorical_cols = df.select_dtypes(include='object').columns
+for col in categorical_cols:
+    df[col].fillna(df[col].mode()[0], inplace=True)
+
+numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
+for col in numeric_cols:
+    df[col].fillna(df[col].mean(), inplace=True)
+
+df.info()
+
+df['RainToday_encoded'] = df['RainToday'].map({'No': 0, 'Yes': 1})
+df['RainTomorrow_encoded'] = df['RainTomorrow'].map({'No': 0, 'Yes': 1})
+
+from sklearn.preprocessing import LabelEncoder
+
+label_encoders = {}
+for col in categorical_cols:
+    if col not in ['RainToday', 'RainTomorrow']:
+        le = LabelEncoder()
+        df[col] = le.fit_transform(df[col])
+        label_encoders[col] = le
+
+print(df[['RainToday', 'RainToday_encoded', 'RainTomorrow', 'RainTomorrow_encoded']].head())
+
+print(df.info())
